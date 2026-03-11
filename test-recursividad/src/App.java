@@ -12,6 +12,7 @@ public class App {
             System.out.println("1. Add Subject");
             System.out.println("2. List Subjects");
             System.out.println("3. Add Topic");
+            System.out.println("4. List Topics");
             System.out.println("5. Exit");
 
             int option = scan.nextInt();
@@ -25,7 +26,11 @@ public class App {
                 case 3:
                     addSubjectTopic();
                     break;
-                case 4:                    
+                case 4:        
+                    for (Subject sub: mySubjects) {
+                        System.out.println("======= " + sub.getName() + " =========");
+                        listTopics(sub.getTopics(), "");
+                    }
                     break;
                 case 5:            
                     System.exit(0);        
@@ -97,11 +102,18 @@ public class App {
 
         selected.addTopic(test);
 
+        System.out.println("Select main topic:\n");
+
         String topicNumber = "";
-        addTopic(selected.getTopics(), topicNumber);
+        listTopics(selected.getTopics(), topicNumber);
+
+        String selectedTopicNumber = scan.next();
+        scan.nextLine();
+        
+        addTopic(selected.getTopics(), topicNumber, selectedTopicNumber);
     }
 
-    public static void addTopic(ArrayList<Topic> topics, String topicNumber) {
+    public static void listTopics(ArrayList<Topic> topics, String topicNumber) {
 
         int subTopicNumber = 0;
         for (Topic top: topics) {
@@ -111,7 +123,32 @@ public class App {
             System.out.println(newTopicNumber + " - " + top.getID() + " - " + top.getName());
 
             if (top.geTopics().size() > 0 ) {
-                addTopic(top.geTopics(), newTopicNumber);
+                listTopics(top.geTopics(), newTopicNumber);
+            }
+        }
+    }
+
+    public static void addTopic(ArrayList<Topic> topics, String topicNumber, String selectedTopicNumber) {
+        int subTopicNumber = 0;
+        for (Topic top: topics) {
+            subTopicNumber++;
+        
+            String newTopicNumber = topicNumber + subTopicNumber + ".";
+
+            if (newTopicNumber.equals(selectedTopicNumber)) {
+                System.out.println("Enter ID:");
+                int topicID = scan.nextInt();
+                scan.nextLine(); 
+
+                System.out.println("Enter name:");
+                String topicName = scan.nextLine();            
+
+                top.addTopic(new Topic(topicID, topicName));
+                return;
+            }
+
+            if (top.geTopics().size() > 0 ) {
+                addTopic(top.geTopics(), topicNumber, selectedTopicNumber);
             }
         }
     }
